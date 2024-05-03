@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import org.controlsfx.control.CheckComboBox;
 
 /* ----------------------  creating the main class ------------------------*/
+/* ----------------------  creating the main class ------------------------*/
 
 public class Main extends Application {
 	
