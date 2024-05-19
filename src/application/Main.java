@@ -225,8 +225,8 @@ private void showTableSelectionScene() {
         this.initialState = Integer.parseInt(initialStateComboBox.getSelectionModel().getSelectedItem());
         
         this.finalStates = new ArrayList<>(finalStateCheckComboBox.getCheckModel().getCheckedItems())
-                .stream()
-                .map(Integer::parseInt)
+                .stream()                 //stream is a collection of functions to use in order to do some processing to the list or any other data structure (it doesn't change the data structure)
+                .map(Integer::parseInt)   // map is a function that takes a another function as an arg in this case : Integer.parseInt
                 .collect(Collectors.toList());
         
         
@@ -242,7 +242,7 @@ private void showTableSelectionScene() {
         	this.transitionMatrix = new int[rows][columns];
         	for (int i = 0; i < rows; i++) {
         	    for (int j = 0; j < columns; j++) {
-        	        ObservableList<Integer> checkedItems = checkBoxMatrix.get(i).get(j).getCheckModel().getCheckedItems();
+        	        ObservableList<Integer> checkedItems = checkBoxMatrix.get(i).get(j).getCheckModel().getCheckedItems();  // observable list because the changes inside it can be tracked when using a GUI
         	        // Assuming you want to take the first checked item from the list
         	        if (!checkedItems.isEmpty()) {
         	            this.transitionMatrix[i][j] = checkedItems.get(0).intValue();
@@ -253,7 +253,7 @@ private void showTableSelectionScene() {
         	    }
         	}
             /* ----------------------  showing the entered automaton  ------------------------*/
-        	//showResultScene();
+        	
         
         
         }
@@ -363,7 +363,7 @@ private void showResultScene() {
   
 // Simplified version to debug the button actions
    if (!isNfa) {
-       nextButton.setOnAction(e -> {
+       nextButton.setOnAction(e -> { 
            
            testWordScene();
        });
@@ -412,14 +412,14 @@ public static String checkWordAcceptedByDFA(int[][] transitionMatrix, int initia
         char c = word.charAt(index);
 
         if (Character.isWhitespace(c)) {
-            index++; // Move to the next character
-            continue; // Skip processing whitespace characters
+            index++; // Move to the next character in the word entered
+            continue; // Skip processing whitespace characters while incrementing the index
         }
 
-        int charIndex = alphabet.indexOf(c);
+        int charIndex = alphabet.indexOf(c);   // checks if the Character is in the alphabet list
         if (charIndex == -1) {
-            // Character not in the alphabet
-            return "The word contains invalid characters.";
+            
+            return "The word contains invalid character : " + c;
         }
 
         // Check if currentState is within the valid range for transitionMatrix
