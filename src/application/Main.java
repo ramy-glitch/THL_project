@@ -174,22 +174,22 @@ private void showTableSelectionScene() {
             checkComboBox.setStyle("-fx-font-size: 10px;");
             
             checkComboBox.getItems().addAll(items);
-            tableGrid.add(checkComboBox, j + 1, i + 1);
+            tableGrid.add(checkComboBox, j + 1, i + 1); // adding each checkcombobox at once
             row.add(checkComboBox);
         }
-        checkBoxMatrix.add(row);
+        checkBoxMatrix.add(row); 
     }
 
     /* ----------------------  setting the initial and final states comboboxes  ------------------------*/
     
     Label initialStateLabel = new Label("Initial State:");
-    ComboBox<String> initialStateComboBox = new ComboBox<>();
+    ComboBox<String> initialStateComboBox = new ComboBox<>();   // initial state can be only one value so i'm using only a combobox
     
-    initialStateComboBox.setPrefWidth(150);
+    initialStateComboBox.setPrefWidth(150);  // methods of that object to set height and width
     initialStateComboBox.setPrefHeight(25);
     
     for (int i = 0; i < rows; i++) {
-        initialStateComboBox.getItems().add("" + i );
+        initialStateComboBox.getItems().add("" + i );  // i can't use the items list because it is a list of integers not strings and i already created the code .
     }
 
     Label finalStateLabel = new Label("Final State(s):");
