@@ -1,11 +1,7 @@
 package application;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -39,7 +35,6 @@ public class Main extends Application {
     private int columns;
     private List<List<CheckComboBox<Integer>>> checkBoxMatrix;
     private int [][] transitionMatrix;// (transition matrix for DFA) 
-    private int[][][] nfamatrix;  // recheck it , it is a matrix of lists 
     private List<Integer> finalStates;
     private int initialState;
     private List<Character> characterList;
@@ -206,9 +201,9 @@ private void showTableSelectionScene() {
 
     Button backButton = new Button("Back");
     backButton.setOnAction(e -> {
-        characterList = null;
+        characterList = null;               //reinitializing the characterList and number of states to null 
         rows = 0;
-        showInputScene();
+        showInputScene();   // return back
     });
 
 
@@ -216,8 +211,9 @@ private void showTableSelectionScene() {
     errorLabel = new Label();
     errorLabel.setStyle("-fx-text-fill: red;");
 
-    submitButton.setOnAction(e -> {
-        if (initialStateComboBox.getSelectionModel().isEmpty() || finalStateCheckComboBox.getCheckModel().getCheckedItems().isEmpty()) {
+    submitButton.setOnAction(e -> {    // start of the submit button action
+        
+    	if (initialStateComboBox.getSelectionModel().isEmpty() || finalStateCheckComboBox.getCheckModel().getCheckedItems().isEmpty()) {
             errorLabel.setText("Error: Initial state and final state(s) selection is required.");
             return;
         }
@@ -236,40 +232,9 @@ private void showTableSelectionScene() {
         
         
         
-    	boolean isNfa = isNFA();
+    	 
     	
-        if (isNfa) {
-           //Here's the NFA 
-        
-        
-        
-            /* ----------------------  creating the NFA matrix  ------------------------*/
-        	
-        	this.nfamatrix = new int[rows][columns][rows];
-        	
-        	
-        	for (int i = 0; i < rows; i++) {
-        	    for (int j = 0; j < columns; j++) {
-        	        for (int k = 0; k < rows; k++) {
-        	            this.nfamatrix[i][j][k] = 0;
-        	        }
-        	    }
-        	}
-
-        	
-        	
-        	for (int i = 0; i < rows; i++) {
-        	    for (int j = 0; j < columns; j++) {
-        	        ObservableList<Integer> checkedItems = checkBoxMatrix.get(i).get(j).getCheckModel().getCheckedItems();
-        	        for (int k = 0; k < checkedItems.size(); k++) {
-        	            this.nfamatrix[i][j][k] = checkedItems.get(k).intValue();
-        	        }
-        	    }
-        	}
-
-        
-        
-        } else {
+        if (!isNFA()){
         	//Here's the DFA 
         
              /* ----------------------  creating the transition matrix  ------------------------*/
@@ -288,18 +253,18 @@ private void showTableSelectionScene() {
         	    }
         	}
             /* ----------------------  showing the entered automaton  ------------------------*/
-        showResultScene();
+        	//showResultScene();
         
         
         }
         
-        
+        showResultScene();
 
     
 
         
             
-    });
+    }); // end of the submit button action
     
     /* ----------------------  Setting up the second scene  ------------------------*/
 
@@ -405,9 +370,7 @@ private void showResultScene() {
    } else {
        nextButton.setOnAction(e -> {
            
-           convertNFAToDFA();
-           
-          conversionScene();
+           return;
        });
    }
 
@@ -418,8 +381,14 @@ private void showResultScene() {
    
    VBox resultLayout = new VBox(10);
    resultLayout.setPadding(new Insets(20));
+   
+   if (!isNFA()) {
    resultLayout.getChildren().addAll(isdetermined, new Label("DFA Transition Matrix:"), transitionMatrixTextArea,new Label("DFA initial State:"),initialStateTextArea,
            new Label("DFA Final State(s):"), finalStatesTextArea, nextButton );
+   }else {
+	   resultLayout.getChildren().addAll(isdetermined, new Label("NFA Transition Matrix:"), transitionMatrixTextArea,new Label("NFA initial State:"),initialStateTextArea,
+	           new Label("NFA Final State(s):"), finalStatesTextArea, nextButton );
+   }
 
    Scene resultScene = new Scene(resultLayout, 500, 500);
 
@@ -430,7 +399,7 @@ private void showResultScene() {
 }
 
 
-private void conversionScene() {showResultScene();};
+
 
 
 
@@ -511,106 +480,6 @@ private void testWordScene() {
 }
 
 
-/* ----------------------  A private method that converts NFA to DFA  ------------------------*/
-
-
-private void convertNFAToDFA() {
-
-
-
-
-
-
-/*
-
-// Call NFAtoDFA.determinize() to convert NFA to DFA
-int [][] result = determinize(this.nfamatrix, this.characterList, this.initialState, this.finalStates);
-
-checkBoxMatrix.clear(); // Clear the existing checkBoxMatrix
-
-for (int [] row : result) {
-    List<CheckComboBox<Integer>> checkBoxRow = new ArrayList<>();
-    for (int value : row) {
-        CheckComboBox<Integer> checkBox = new CheckComboBox<>();
-        checkBox.getItems().add(value); // Add the value from the existingMatrix to the CheckComboBox
-        checkBoxRow.add(checkBox);
-    }
-    checkBoxMatrix.add(checkBoxRow);
-}
-
-
-conversionScene();
-
-// Update transition matrix, initial state, and final states with the results
-//this.transitionMatrix = result.getTransitionMatrix();
-//this.initialState = result.getInitialState();
-
-// Convert the set of final states to a list
-//this.finalStates = new ArrayList<>(result.getFinalStates());
-
-//this.rows = result.getNumRows();
-
-
-
-
-
-
-
-// Show the result scene
-
-*/
-}
-
-
-public static int[][] determinize(int[][][] nfamatrix, List<Character> alphabet, int initialState, List<Integer> finalStatesInt) {
-    // Create DFA states map to track DFA state transitions
-    Map<Set<Integer>, Integer> dfaStatesMap = new HashMap<>();
-    List<Set<Integer>> dfaStatesList = new ArrayList<>();
-    
-    // Initialize the DFA states with the initial state of the NFA
-    Set<Integer> initialDfaState = new HashSet<>();
-    initialDfaState.add(initialState);
-    dfaStatesMap.put(initialDfaState, 0);
-    dfaStatesList.add(initialDfaState);
-    
-    // Initialize DFA transition table
-    int alphabetSize = alphabet.size();
-    int dfaStateSize = dfaStatesList.size();
-    int[][] dfaMatrix = new int[dfaStateSize][alphabetSize];
-    
-    // Process each DFA state
-    for (int i = 0; i < dfaStateSize; i++) {
-        Set<Integer> currentState = dfaStatesList.get(i);
-        
-        // Process each character in the alphabet
-        for (int j = 0; j < alphabetSize; j++) {
-            char symbol = alphabet.get(j);
-            
-            // Calculate the set of states reachable from currentState with symbol transition
-            Set<Integer> nextState = new HashSet<>();
-            
-            for (int state : currentState) {
-                for (int nextStateIndex = 0; nextStateIndex < nfamatrix[state][j].length; nextStateIndex++) {
-                    int next = nfamatrix[state][j][nextStateIndex];
-                    if (next != 0) {
-                        nextState.add(next);
-                    }
-                }
-            }
-            
-            // Add nextState to DFA states if it's not already added
-            if (!dfaStatesMap.containsKey(nextState)) {
-                dfaStatesMap.put(nextState, dfaStatesList.size());
-                dfaStatesList.add(nextState);
-            }
-            
-            // Update DFA transition table
-            dfaMatrix[i][j] = dfaStatesMap.get(nextState);
-        }
-    }
-    
-    return dfaMatrix;
-}
 
 
 }
