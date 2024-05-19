@@ -39,7 +39,7 @@ public class Main extends Application {
     private int columns;
     private List<List<CheckComboBox<Integer>>> checkBoxMatrix;
     private int [][] transitionMatrix;// (transition matrix for DFA) 
-    private int[][][] nfamatrix;
+    private int[][][] nfamatrix;  // recheck it , it is a matrix of lists 
     private List<Integer> finalStates;
     private int initialState;
     private List<Character> characterList;
@@ -82,7 +82,7 @@ private void showInputScene() {
     errorLabel = new Label();
     errorLabel.setStyle("-fx-text-fill: red;");
 
-    /* ----------------------  set the submit button on action  ------------------------*/
+    
     /* ----------------------  set the submit button on action  ------------------------*/
     submitButton.setOnAction(e -> {
         String rowsText = rowsField.getText().trim(); //extracting the text from the text field and removing white space
@@ -96,17 +96,19 @@ private void showInputScene() {
     /* ----------------------  checking and extracting the elements  ------------------------*/
 
         try {
-            int inputRows = Integer.parseInt(rowsText);
-            String[] characters = charsText.split("\\s+");
+            int inputRows = Integer.parseInt(rowsText); // getting the number of states
+            
+            
+            String[] characters = charsText.split("\\s+"); // sub-strings are stored in the var characters  
 
             characterList = new ArrayList<>();
-            for (String row : characters) {
+            for (String row : characters) {                // the loop processes each sub_string to extract the characters
                 for (char c : row.toCharArray()) {
                     if (characterList.contains(c)) {
                         errorLabel.setText("Error: Duplicate character '" + c + "'. Please correct.");
                         return;
                     }
-                    characterList.add(c);
+                    characterList.add(c); // it adds it if it doesn't exist already in the list
                 }
             }
 
@@ -148,9 +150,9 @@ private void showTableSelectionScene() {
     /* ----------------------  setting up the labels of each row and column ------------------------*/
     
     for (int j = 0; j < columns; j++) {
-        Label label = new Label(String.valueOf(characterList.get(j)));
-        label.setPadding(new Insets(0, 10, 0, 10));
-        tableGrid.add(label, j + 1, 0);
+        Label label = new Label(String.valueOf(characterList.get(j))); // string.valueOf transforms the character at the index j in the characterList
+        label.setPadding(new Insets(0, 10, 0, 10)); // padding (empty space) around the content of the label , (top,right,bottom,left)
+        tableGrid.add(label, j + 1, 0);    // add label to the grid in the first row (0) , starts from 2 column of the table grid
     }
 
     for (int i = 0; i < rows; i++) {
@@ -163,13 +165,14 @@ private void showTableSelectionScene() {
     
     
     checkBoxMatrix = new ArrayList<>(); //initializes checkBoxMatrix to an empty list of lists of sets .
-   
+    List<Integer> items = IntStream.rangeClosed(0, rows-1).boxed().collect(Collectors.toList()); // the numbers from 0 to row-1 that we put in every checkcobox
+    
     for (int i = 0; i < rows; i++) {
-        List<CheckComboBox<Integer>> row = new ArrayList<>();
+        List<CheckComboBox<Integer>> row = new ArrayList<>(); // for the first iteration (as well as the others ) it creates a row to put in the checkcomboboxes of that row  
         for (int j = 0; j < columns; j++) {
             CheckComboBox<Integer> checkComboBox = new CheckComboBox<>();
             checkComboBox.setStyle("-fx-font-size: 10px;");
-            List<Integer> items = IntStream.rangeClosed(0, rows-1).boxed().collect(Collectors.toList());
+            
             checkComboBox.getItems().addAll(items);
             tableGrid.add(checkComboBox, j + 1, i + 1);
             row.add(checkComboBox);
