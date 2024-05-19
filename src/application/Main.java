@@ -422,31 +422,32 @@ public static String checkWordAcceptedByDFA(int[][] transitionMatrix, int initia
             return "The word contains invalid character : " + c;
         }
 
-        // Check if currentState is within the valid range for transitionMatrix
-        if (currentState < 0 || currentState > transitionMatrix.length) {
+                   // this line of code isn't really that important because i already took care of processing the data correctly
+        if (currentState < 0 || currentState > transitionMatrix.length) { // transitionMatrix.length <=> the number of rows , checks if the current state is a valid state
             return "Invalid initial state.";
         }
 
         // Check if charIndex is within the valid range for transitionMatrix[currentState]
-        if (charIndex < 0 || charIndex >= transitionMatrix[currentState].length) {
+        if (transitionMatrix[currentState][charIndex] == -1) {
             return "Invalid transition for the character '" + c + "' at state " + currentState + ".";
         }
 
-        // Get the transition for the current state and input character
-        int transition = transitionMatrix[currentState][charIndex];
 
-        // For simplicity, you could randomly choose a transition
-        // or iterate through all transitions (as shown below, choosing the first one)
-        currentState = transition; // Assume selecting the first transition
+        // updating the current state 
+        
+        currentState = transitionMatrix[currentState][charIndex];
 
-        index++; // Move to the next character
+        
+         
+
+        index++; // Move to the next character in the word
     }
 
     // Check if the final state after processing the entire word is an accepting state
     if (finalStates.contains(currentState)) {
         return "The word is accepted by the DFA.";
     } else {
-        return "The word ends in a non-accepting state (" + currentState + ").";
+        return "The word ends in a non-accepting state ( state " + currentState + " ).";
     }
 }
 
