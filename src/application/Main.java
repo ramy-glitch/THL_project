@@ -63,7 +63,7 @@ public class Main extends Application {
 private void showInputScene() {
     
 	/* ----------------------  creating the grid and the UI elements  ------------------------*/
-	VBox inputLayout = new VBox(10);
+	VBox inputLayout = new VBox(10);  // padding of 10px between the children nodes
     inputLayout.setStyle("-fx-background-color: lightblue; -fx-padding: 20px;");
 
     Label rowsLabel = new Label("Enter number of states:");
@@ -361,7 +361,7 @@ private void showResultScene() {
    
    Button nextButton = new Button("Next");
   
-// Simplified version to debug the button actions
+
    if (!isNfa) {
        nextButton.setOnAction(e -> { 
            
